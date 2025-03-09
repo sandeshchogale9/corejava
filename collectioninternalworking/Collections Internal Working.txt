@@ -1,0 +1,271 @@
+Java Collections Framework (JCF) Overview
+Internal working of All the collections includes Concurrent Collections.
+
+The Java Collections Framework includes List, Set, Queue, Map, and concurrent collections designed for efficient data storage, retrieval, and manipulation.
+
+List Implementations:
+1. ArrayList (Internal Working)
+	Implements List interface (Ordered collection, Allows duplicates).
+	Uses a dynamic array internally (Object[]).
+	Grows dynamically (when full, capacity increases by 1.5x).
+	Fast random access (O(1)), but slow inserts/deletes (O(n)) due to shifting elements.
+	Best Use Case: 
+		When you need fast random access & fewer insert/delete operations.
+
+Q: How does ArrayList expand its size internally?
+A: It creates a new array (1.5x size), copies the old elements, and replaces the reference.	
+
+
+LinkedList (Internal Working)
+Implements List & Deque interfaces (Allows duplicates).
+Uses Doubly Linked List internally (Node objects with prev & next pointers).
+Faster inserts & deletes (O(1)), but slower random access (O(n)).
+Extra memory overhead (due to storing pointers).
+Best Use Case: 
+	When you need frequent insertions/deletions but not random access.
+
+Doubly linked list, with each node having a prev and next pointer.
+Insertion & Deletion are O(1) if done at the head or tail.
+Random access is O(n) because traversal is required. O(1) complexity
+Best Use Case: 
+	When frequent insertions/deletions in the middle of the list are required.
+
+Q: When should you use LinkedList over ArrayList?
+A: When frequent insertions/deletions in the middle are needed. O(1) complexity
+
+
+Set Implementations
+HashSet (Internal Working)
+Implements Set interface (No duplicates, Unordered).
+Uses HashMap internally (keys as elements, values as dummy Object).
+Works on Hashing Mechanism for fast access (O(1) in best case).
+Collision Handling: 
+	Uses Linked List or Red-Black Tree (Java 8+).
+Backed by a HashMap, storing values as Map.put(element, PRESENT).
+Uses hashing to achieve O(1) lookup.
+Rehashing happens when load factor (0.75) is exceeded.
+Best Use Case: 
+	When fast lookup (O(1)) and unique elements are required.
+	When you need a fast, unordered collection with unique elements.
+
+Q: Why does HashSet not allow duplicates?
+A: Because HashMap.put() overwrites existing values if the key (hash) already exists.
+
+TreeSet (Internal Working)
+Implements NavigableSet & SortedSet (Stores unique elements in sorted order).
+Uses TreeMap internally (Keys as elements, values as dummy Object).
+Based on Red-Black Tree (Self-balancing BST).
+Time Complexity: O(log n) for insert, delete, search.
+
+Uses Red-Black Tree, maintaining sorted order.
+Insertion & Deletion: O(log n).
+Implements NavigableSet, allowing range queries.
+Best Use Case: 
+	When you need a sorted set of unique elements.
+
+Q: What is the difference between HashSet and TreeSet?
+A: HashSet is faster (O(1)), but TreeSet maintains sorted order (O(log n)).
+
+
+LinkedHashSet (Internal Working)
+Extends HashSet but maintains insertion order.
+Uses LinkedHashMap internally (Linked List maintains order).
+Fast operations (O(1)) with predictable iteration order.
+Best Use Case: 
+	When you need a unique set with predictable iteration order.
+
+Maintains insertion order using a doubly linked list.
+Performance is similar to HashSet.
+Q: When should you use LinkedHashSet?
+A: When ordering matters, but duplicates must be avoided.
+
+
+Queue Implementations
+PriorityQueue (Internal Working)
+Implements Queue interface (FIFO but sorted by priority).
+Uses Binary Heap (Min-Heap by default) for ordering.
+Time Complexity: O(log n) for insert & delete.
+Does not allow null values.
+
+Uses a Binary Heap (Min-Heap by default).
+O(log n) insertion & deletion, as elements are heapified.
+Best Use Case: 
+	When you need a priority-based processing queue (e.g., task scheduling, Dijkstra’s algorithm).
+
+Q: What data structure is used internally by PriorityQueue?
+A: A binary heap, implemented as an array-based heap structure.
+
+
+ArrayBlockingQueue
+Uses a fixed-size array.
+Implements FIFO behavior.
+Supports blocking operations for producer-consumer.
+Q: When should you use ArrayBlockingQueue?
+A: When bounded blocking queue behavior is needed, like in thread pools.
+
+
+Map Implementations:
+HashMap (Internal Working)
+	Data Structure: Uses an array of linked lists (buckets) and binary trees (since Java 8 for large buckets).
+	Storage Mechanism: Stores key-value pairs as Nodes (Entry objects).
+Hashing Mechanism:
+	Computes hash using hashCode() of the key.
+	Uses index = (hash & (n-1)) for bucket placement.
+Handling Collisions:
+	Uses Linked List if multiple entries map to the same bucket.
+	Converts to Balanced Tree (Red-Black Tree) if entries in a bucket exceed 8 (since Java 8).
+Resize Mechanism:
+	Resizes when load factor (default 0.75) is exceeded.
+	Doubles the capacity and rehashes all entries.
+Performance:
+	O(1) for put/get (best case, unique keys).
+	O(log n) if tree structure is used (worst case).
+
+Uses an array of linked lists (buckets).
+Hash collisions are handled by chaining (LinkedList in Java 7, TreeMap in Java 8+).
+Default load factor is 0.75.
+
+Q: What happens when HashMap’s threshold is exceeded?
+A: It resizes (doubles the size) and rehashes elements.
+
+LinkedHashMap (Internal Working)
+Extends HashMap but maintains insertion order using a doubly linked list.
+Ordered iteration (preserves insertion order by default).
+Can be configured for access order (useful for LRU caches).
+
+Internal Working:
+Data Structure:
+	Uses hash table + doubly linked list to maintain order.
+Each Entry (Node) contains:
+	static class Entry<K, V> extends HashMap.Node<K, V> {
+		Entry<K, V> before, after; // Pointers for linked list
+	}
+Maintains Order:
+	Insertion Order (Default): Iterates in the order elements were inserted.
+	Access Order (accessOrder = true): Moves recently accessed elements to the end (useful for LRU cache).
+Collision Handling:
+	Uses Separate Chaining (same as HashMap).
+	Converts buckets to Red-Black Trees (Java 8) for efficiency.
+Resizing Mechanism:
+	Works like HashMap, resizing when load factor (default 0.75) is exceeded.
+Use Cases:
+	Preserving Insertion Order (e.g., ordered mappings in JSON).
+	LRU Cache Implementation (set accessOrder = true).
+
+Q: How does LinkedHashMap maintain insertion order?
+A: It stores entries as a doubly linked list, keeping track of the order.
+
+
+TreeMap (Internal Working)
+Uses a Red-Black Tree (Self-balancing BST).
+O(log n) insertion, deletion, and lookup.
+Maintains elements in sorted order.
+Implements NavigableMap & SortedMap
+Stores keys in sorted order (ascending by default)
+Uses a self-balancing Red-Black Tree (a type of binary search tree)
+
+Internal Working:
+Data Structure:
+	Uses a Red-Black Tree (a self-balancing Binary Search Tree).
+	Each node stores key-value pairs and maintains balance through rotations.
+Sorting Mechanism:
+	By default, keys are sorted in natural order (Comparable).
+	Custom sorting can be applied using a Comparator.
+Time Complexity:
+	O(log n) for put(), get(), remove() (since it’s a balanced tree).
+No Null Keys Allowed:
+	Allows null values, but does not allow null keys (unlike HashMap).
+Use Cases:
+	When sorted order is required (e.g., ranking systems).
+	Range-based queries (e.g., subMap(), headMap(), tailMap()).
+
+Q: When should you use TreeMap?
+A: When sorted key storage is required.
+
+
+Concurrent Collections
+ConcurrentHashMap (Internal Working)
+Segmented locking in Java 7 (Each segment works independently).
+Bucket-wise locking in Java 8 (Fine-grained locking on individual bins).
+Thread-safe without locking the entire map.
+
+Bucket-based Storage:
+	Similar to HashMap, it uses buckets to store key-value pairs.
+No Global Locking:
+	Uses fine-grained locking on individual buckets instead of locking the entire map.
+Java 7 (Segment-based Locking):
+	Divides the map into segments.
+	Each segment is locked independently, allowing better concurrency.
+Java 8 (CAS & Synchronized Blocks):
+	No more segments! Uses a single Node array.
+	Uses CAS (Compare-And-Swap) for updates instead of locks.
+	Uses synchronized blocks only when necessary (e.g., resizing, high contention).
+	Buckets turn into Red-Black Trees if too many collisions (like HashMap).
+
+Use Case:
+	Multi-threaded caching (e.g., frequently read, occasionally updated).
+	High-concurrency scenarios (e.g., shared configurations, real-time data processing).
+
+Q: How is ConcurrentHashMap different from HashMap?
+A: It supports multi-threaded access without global synchronization.
+
+
+CopyOnWriteArrayList
+Thread-safe variant of ArrayList from java.util.concurrent.
+Modifications create a new copy of the underlying array to ensure safe iteration.
+No ConcurrentModificationException since the original list remains unchanged during iteration.
+Best for read-heavy scenarios where writes are infrequent.
+Key Features:
+	Iterators are fail-safe (don't throw ConcurrentModificationException).
+	Reads are fast (direct access to elements).
+	Writes are expensive (new array creation).
+
+Uses copy-on-write strategy (creates a new copy on modification).
+Good for read-heavy workloads.
+Read-heavy operations (e.g., caching, configuration settings).
+When multiple threads access a list concurrently but modifications are rare.
+
+Q: When should you use CopyOnWriteArrayList?
+A: When frequent reads and rare writes are expected.
+
+
+ConcurrentLinkedQueue
+Lock-free, non-blocking queue.
+Uses CAS (Compare-And-Swap) algorithm for high-performance concurrency.
+Q: What concurrency technique does ConcurrentLinkedQueue use?
+A: Lock-free CAS-based approach.
+
+
+Summary Table
+Collection -> Internal Working -> Time Complexity
+ArrayList -> Dynamic array -> O(1) access, O(n) insert/delete
+LinkedList -> Doubly linked list -> O(n) access, O(1) insert/delete
+HashSet -> HashMap-based -> O(1) insert/delete/search
+TreeSet -> Red-Black Tree -> O(log n) operations
+HashMap	Hashing + LinkedList (Java 7) / TreeMap (Java 8) ->	O(1) avg, O(n) worst
+ConcurrentHashMap -> Bucket-wise locking -> O(1) avg
+CopyOnWriteArrayList ->	Copy-on-write strategy -> O(n) write, O(1) read
+PriorityQueue -> Binary Heap -> O(log n)
+
+
+List Implementations (ArrayList, LinkedList)
+Set Implementations (HashSet, TreeSet, LinkedHashSet)
+Queue Implementations (PriorityQueue, ArrayBlockingQueue)
+Map Implementations (HashMap, LinkedHashMap, TreeMap)
+Concurrent Collections (ConcurrentHashMap, CopyOnWriteArrayList, ConcurrentLinkedQueue)
+
+Summary
+Collection -> Use Case
+ArrayList -> Fast lookup, dynamic resizing
+LinkedList	->  Frequent insert/delete in middle
+HashSet	-> Unique elements, unordered
+TreeSet	->  Sorted unique elements
+PriorityQueue -> Priority-based ordering
+HashMap	-> Fast key-value lookup
+TreeMap -> 	Sorted key-value storage
+ConcurrentHashMap -> Thread-safe HashMap
+CopyOnWriteArrayList -> Safe read-heavy list
+ConcurrentLinkedQueue -> Lock-free concurrent queue
+
+
+

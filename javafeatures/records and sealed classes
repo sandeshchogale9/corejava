@@ -1,0 +1,298 @@
+coding practice- 25/2/25
+StreamsProgramming 26/02/2025
+Record and sealed classes -1 26/02/2025
+
+
+StreamsProgramming:
+Java Streams API (introduced in Java 8) allows processing collections, arrays, or I/O channels efficiently using functional-style operations.
+Ways to Create Streams:
+1. From Collection
+List<String> names = List.of("Alice", "Bob", "Charlie");
+Stream<String> stream1 = names.stream();  // Sequential stream
+Stream<String> stream2 = names.parallelStream(); // Parallel stream
+
+2. From Array
+String[] arr = {"one", "two", "three"};
+Stream<String> stream3 = Arrays.stream(arr);
+
+3. From Stream.of()
+Stream<Integer> stream4 = Stream.of(1, 2, 3, 4, 5);
+
+4. Using Stream.iterate() (Infinite Stream)
+Stream<Integer> stream5 = Stream.iterate(1, n -> n + 2).limit(5);
+stream5.forEach(System.out::println); // 1, 3, 5, 7, 9
+
+5. Using Stream.generate()
+Stream<Double> stream6 = Stream.generate(Math::random).limit(3);
+stream6.forEach(System.out::println);
+
+6. Using IntStream (Primitive Streams)
+IntStream intStream = IntStream.range(1, 5); // 1, 2, 3, 4
+IntStream intStream2 = IntStream.rangeClosed(1, 5); // 1, 2, 3, 4, 5
+
+#Common Stream Operations
+1. Filtering Elements
+List<String> filtered = names.stream()
+        .filter(name -> name.startsWith("A"))
+        .collect(Collectors.toList());
+System.out.println(filtered); // [Alice]
+
+2. Mapping Elements
+List<Integer> lengths = names.stream()
+        .map(String::length)
+        .collect(Collectors.toList());
+System.out.println(lengths); // [5, 3, 7]
+
+3. Sorting
+List<String> sortedNames = names.stream()
+        .sorted()
+        .collect(Collectors.toList());
+System.out.println(sortedNames); // [Alice, Bob, Charlie]
+
+4. Finding the First Element
+Optional<String> firstName = names.stream().findFirst();
+System.out.println(firstName.orElse("No name found"));
+
+5. Reducing Values
+int sum = IntStream.of(1, 2, 3, 4, 5).reduce(0, Integer::sum);
+System.out.println(sum); // 15
+
+6. Collecting Data
+Set<String> nameSet = names.stream().collect(Collectors.toSet());
+Map<Integer, String> nameMap = names.stream()
+        .collect(Collectors.toMap(String::length, Function.identity(), (a, b) -> a));
+
+#Parallel Streams (for Performance)
+List<Integer> numbers = List.of(1, 2, 3, 4, 5);
+int sumParallel = numbers.parallelStream().reduce(0, Integer::sum);
+System.out.println(sumParallel); // 15
+
+
+#Record and sealed classes:
+What is a Record?
+A record is a special type of class introduced in Java 14 that automatically generates:
+-Getters
+-toString()
+-equals() and hashCode()
+-A constructor with all fields
+
+Advantages of Records
+Immutable (fields cannot be changed)
+Less boilerplate code (no need for getters, constructors, etc.)
+Useful for DTOs (Data Transfer Objects)
+
+#Sealed Classes (Java 17+)
+What is a Sealed Class?
+A sealed class restricts which classes can extend it. Introduced in Java 17, it allows:
+More control over inheritance.
+Only specified subclasses can extend it.
+
+#When to Use Sealed Classes?
+When you want only a specific set of classes to extend a base class.
+When working with pattern matching (switch expressions).
+When security & API stability are important.
+
+Problems statements:
+1. Given a list of integers, find the second-largest number using Java 8 Streams.
+List<Integer> numbers = List.of(10, 20, 4, 45, 99, 99, 45);
+Output: 45
+Hint: Use sorted() and distinct().
+
+2. Given a list of integers, return a list of duplicate elements.
+List<Integer> nums = List.of(1, 2, 3, 4, 5, 6, 2, 3, 4);
+Output: [2, 3, 4]
+Hint: Use Collectors.groupingBy().
+
+3. Given a list of strings, find the longest string.
+List<String> words = List.of("Java", "Python", "JavaScript", "C++");
+Output: "JavaScript"
+Hint: Use max(Comparator.comparingInt(String::length)).
+
+4. Given a list of words, count how many words start with the letter 'J'.
+List<String> words = List.of("Java", "Python", "JavaScript", "C++", "JQuery");
+Output: 3
+Hint: Use filter() and count().
+
+5. Convert a list of strings to uppercase using Streams.
+List<String> words = List.of("java", "python", "go");
+Output: [JAVA, PYTHON, GO]
+Hint: Use map(String::toUpperCase).
+
+6. Create a Record Class for Employee
+Define a record Employee with fields:
+name (String)
+salary (double)
+department (String)
+Employee emp = new Employee("Alice", 50000.0, "IT");
+System.out.println(emp.name());  // Alice
+Output: Employee[name=Alice, salary=50000.0, department=IT]
+Hint: Use record.
+
+7. Given a list of employees, find the one with the highest salary.
+List<Employee> employees = List.of(
+    new Employee("John", 70000, "HR"),
+    new Employee("Alice", 90000, "IT"),
+    new Employee("Bob", 75000, "Finance")
+);
+Output: Employee[name=Alice, salary=90000.0, department=IT]
+Hint: Use max(Comparator.comparing(Employee::salary)).
+
+8. Sealed Classes Challenges (Java 17+)
+Define a sealed class Animal, which can be extended only by Dog, Cat, and Parrot.
+sealed class Animal permits Dog, Cat, Parrot {}
+final class Dog extends Animal {}
+final class Cat extends Animal {}
+final class Parrot extends Animal {}
+Output: Only Dog, Cat, and Parrot can extend Animal.
+Hint: Use sealed and permits.
+
+9. Given a sealed class hierarchy for Shape (Circle, Rectangle, Triangle), implement a method using instanceof pattern matching to compute the area of a shape.
+sealed interface Shape permits Circle, Rectangle, Triangle {}
+record Circle(double radius) implements Shape {}
+record Rectangle(double width, double height) implements Shape {}
+record Triangle(double base, double height) implements Shape {}
+
+static double computeArea(Shape shape) {
+    return switch (shape) {
+        case Circle c -> Math.PI * c.radius() * c.radius();
+        case Rectangle r -> r.width() * r.height();
+        case Triangle t -> 0.5 * t.base() * t.height();
+    };
+}
+Output: computeArea(new Circle(5)) → 78.54
+Hint: Use switch expressions.
+
+10. Given a list of employees, find the average salary per department.
+List<Employee> employees = List.of(
+    new Employee("John", 70000, "HR"),
+    new Employee("Alice", 90000, "IT"),
+    new Employee("Bob", 75000, "Finance"),
+    new Employee("David", 85000, "IT"),
+    new Employee("Emily", 65000, "HR")
+);
+Output:
+HR -> 67500.0
+IT -> 87500.0
+Finance -> 75000.0
+Hint: Use Collectors.groupingBy() and Collectors.averagingDouble().
+
+
+11. You have a list of employees with a hierarchical structure (employees reporting to a manager). Your task is to:
+Find the total number of employees reporting to a specific manager.
+Get the top 3 highest-paid employees across the organization.
+Calculate the average salary by department.
+Example Input:
+record Employee(String name, double salary, String department, String manager) {}
+List<Employee> employees = List.of(
+    new Employee("John", 90000, "IT", "Alice"),
+    new Employee("David", 80000, "Finance", "Alice"),
+    new Employee("Sophia", 120000, "IT", "Bob"),
+    new Employee("Michael", 95000, "HR", "Alice"),
+    new Employee("Emma", 110000, "IT", "Sophia"),
+    new Employee("Ethan", 105000, "Finance", "David")
+);
+Expected Output:
+Employees reporting to Alice → 3
+Top 3 highest-paid employees → [Sophia, Emma, Ethan]
+Average salary per department:
+IT -> 106666.67
+Finance -> 92500.00
+HR -> 95000.00
+Hint:
+Use filter() to find employees reporting to a manager.
+Use sorted(Comparator.comparingDouble(Employee::salary).reversed()).limit(3).
+Use Collectors.groupingBy() and Collectors.averagingDouble() for average salary.
+
+12. Real-Time Stock Price Analysis
+Problem Statement
+You receive a real-time stream of stock prices. You need to:
+Find the highest price of a given stock in the last n minutes.
+Get the average price per stock symbol.
+Filter stocks whose price increased by more than 5% in the last 5 minutes.
+Example Input:
+record StockPrice(String symbol, double price, LocalDateTime timestamp) {}
+
+List<StockPrice> prices = List.of(
+    new StockPrice("AAPL", 150, LocalDateTime.now().minusMinutes(1)),
+    new StockPrice("GOOGL", 2800, LocalDateTime.now().minusMinutes(2)),
+    new StockPrice("AAPL", 155, LocalDateTime.now().minusMinutes(3)),
+    new StockPrice("TSLA", 750, LocalDateTime.now().minusMinutes(4)),
+    new StockPrice("AAPL", 160, LocalDateTime.now().minusMinutes(5))
+);
+Expected Output:
+Highest price for AAPL in last 5 minutes → 160
+Average price per stock:
+AAPL -> 155.0
+GOOGL -> 2800.0
+TSLA -> 750.0
+Stocks that increased by more than 5% in the last 5 minutes → [AAPL]
+Hint:
+Use max(Comparator.comparing(StockPrice::price)).
+Use Collectors.groupingBy(StockPrice::symbol, Collectors.averagingDouble(StockPrice::price)).
+Use filter() and sorted() to track 5% growth.
+
+13. Harder Problems using Record Classes (Java 8 only)
+Immutable Financial Transactions System
+You're developing a banking system where transactions must be immutable and track:
+The balance per account based on transaction history.
+All transactions above $10,000 for fraud detection.
+Find the account with the highest balance.
+Example Input:
+java
+Copy
+Edit
+record Transaction(String accountId, double amount, String type, LocalDateTime timestamp) {}
+
+List<Transaction> transactions = List.of(
+    new Transaction("A123", 5000, "Deposit", LocalDateTime.now().minusDays(1)),
+    new Transaction("B456", 12000, "Deposit", LocalDateTime.now().minusDays(2)),
+    new Transaction("A123", -2000, "Withdraw", LocalDateTime.now().minusDays(3)),
+    new Transaction("C789", 15000, "Deposit", LocalDateTime.now().minusDays(4))
+);
+Expected Output:
+Balances per account:
+A123 -> 3000.00
+B456 -> 12000.00
+C789 -> 15000.00
+Transactions above $10,000 → [B456, C789]
+Account with the highest balance → C789
+Hint:
+Use Collectors.groupingBy(Transaction::accountId, Collectors.summingDouble(Transaction::amount)).
+Use filter() to detect fraud.
+Use max(Comparator.comparingDouble(Map.Entry::getValue)).
+
+
+14. Harder Problems using Sealed Classes (Java 17+)
+Implement an RBAC system where:
+Only specific roles can access sensitive data.
+Different roles have different permissions.
+Deny unauthorized users from performing actions.
+Example Code:
+sealed interface UserRole permits Admin, Manager, Employee {}
+record Admin(String name) implements UserRole {}
+record Manager(String name) implements UserRole {}
+record Employee(String name) implements UserRole {}
+
+public class AccessControl {
+    public static String getAccessLevel(UserRole user) {
+        return switch (user) {
+            case Admin a -> "Full Access";
+            case Manager m -> "Limited Access";
+            case Employee e -> "Restricted Access";
+        };
+    }
+
+    public static void main(String[] args) {
+        UserRole user1 = new Admin("Alice");
+        UserRole user2 = new Employee("Bob");
+
+        System.out.println(getAccessLevel(user1)); // Full Access
+        System.out.println(getAccessLevel(user2)); // Restricted Access
+    }
+}
+Expected Output:
+Full Access
+Restricted Access
+Hint:
+Use sealed interface for role-based access.
+Use switch pattern matching

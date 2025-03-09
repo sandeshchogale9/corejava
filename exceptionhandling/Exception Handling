@@ -1,0 +1,181 @@
+Exception Handling, Serialization, Deserialization, Externalization, Reflection	-4	 21/02/2025
+Collections & Generics, Custom object as a key, Collections and Arrays util classes	-6	 21/02/2025
+
+Is Class Loading Thread-Safe in Java?
+Yes, class loading in Java is inherently thread-safe due to the Java ClassLoader and Class Initialization Locking Mechanism. Java ensures that a class is loaded
+and initialized only once, even in a multi-threaded environment.
+The Java class loading process consists of three main phases:
+Phase -> Description -> Thread Safety
+Loading	The class is loaded by ClassLoader and bytecode is verified.	✅ Thread-Safe
+Linking	The class's static variables and methods are linked.	✅ Thread-Safe
+Initialization	Static blocks and static variables are initialized.	✅ Thread-Safe (synchronized on Class object)
+
+When a class is initialized, Java synchronizes on the Class object, ensuring that multiple threads cannot initialize it at the same time.
+The JVM acquires a lock on the Class object when running the static block, ensuring that only one thread can initialize the class.
+
+Exception Handling:
+Types of Exceptions:
+Checked Exceptions (Compile-time)
+Must be handled using try-catch or declared using throws.
+Example: IOException, SQLException.
+Unchecked Exceptions (Runtime)
+
+Inherited from RuntimeException, not required to be handled explicitly.
+Example: NullPointerException, ArrayIndexOutOfBoundsException.
+Errors (Serious issues)
+Example: StackOverflowError, OutOfMemoryError.
+
+Exception Handling Keywords:
+try → Code block where exception may occur.
+catch → Handles exception.
+finally → Always executes (used for cleanup).
+throw → Manually throw an exception.
+throws → Declare exceptions in a method signature.
+
+Custom Exception:
+Use Cases: Transaction handling, API error responses, input validation.
+
+#How Does Try-With-Resources Work Internally?
+try-with-resources is a feature introduced in Java 7 that automatically closes resources (like file streams, sockets, database connections) when they are no longer needed.
+Internally, it calls close() using AutoCloseable
+Any class used in try-with-resources must implement AutoCloseable or Closeable interface.
+The JVM automatically calls close() on all resources at the end of the try block.
+
+
+Serialization:
+Serialization is the process of converting an object into a byte stream so it can be saved to a file or sent over a network.
+Steps for Serialization:
+Implement Serializable interface.
+Use ObjectOutputStream to write the object.
+Steps for Deserialization:
+Use ObjectInputStream to read the object.
+
+Scenario 1: Both Parent and Child Are Serializable → Everything is serialized. ✅
+Scenario 2: Only Child is Serializable, but Parent is NOT → Parent's data is NOT serialized; Default constructor is called at deserialization. ❌
+Scenario 3: Only Parent is Serializable, but Child is NOT → Compilation error. ❌
+
+If the parent class is not serializable, what happens when the child class is serialized?
+🔹 Parent fields are not serialized, and the parent's default constructor is called at deserialization.
+
+How do you serialize a non-serializable parent class?
+🔹 Manually serialize fields using writeObject() and readObject().
+
+What happens if a parent is Serializable, but the child is not?
+🔹 Compilation fails with NotSerializableException.
+
+How does Java handle transient variables during serialization?
+🔹 transient fields are not serialized.
+
+#Deserialization:
+Deserialization is the reverse process of converting a byte stream back into an object.
+During deserialization, Java creates a new object from the serialized data.
+If you want to control which object is returned after deserialization (like a Singleton), you use readResolve().
+
+#Externalization:
+Externalization allows for custom serialization logic by implementing the Externalizable interface.
+It gives more control over what gets serialized.
+When to use Externalization?
+When fine-grained control is needed over serialization (e.g., skipping transient fields).
+Better performance compared to default serialization.
+
+#Reflection:
+Reflection is a Java feature that allows introspection and modification of classes, methods, and fields at runtime.
+Use Cases:
+Frameworks (Spring, Hibernate) use reflection to inject dependencies.
+Used in Testing frameworks (JUnit) to invoke test methods dynamically.
+
+Summary of Object Creation Methods
+Method	Uses Constructor?	Recommended?	Notes
+Class.newInstance()	✅ Yes	❌ Deprecated	Only works with no-arg constructors
+Constructor.newInstance()	✅ Yes	✅ Best Practice	Supports parameterized constructors
+Unsafe.allocateInstance()	❌ No	❌ Risky	Creates object without calling a constructor
+clone()	❌ No	⚠️ Limited Use	Requires Cloneable, only shallow copy
+Serialization	❌ No	✅ Best for deep copy	Preserves state but has performance overhead
+
+Use Constructor.newInstance() for general object creation.
+✅ Use Serialization for deep copies.
+⚠️ Avoid Unsafe.allocateInstance() unless absolutely necessary.
+
+#Collections & Generics in Java
+Collections in Java provide dynamic data structures, and Generics help in type safety and code reusability
+Generics enforce type safety at compile time.
+
+#Common Collection Interfaces
+Interface -> Description -> Example Implementations
+List -> Ordered, allows duplicates -> ArrayList, LinkedList
+Set -> Unordered, unique elements -> HashSet, TreeSet
+Queue -> FIFO (First In, First Out) -> PriorityQueue, ArrayDeque
+Map -> Key-Value pairs ->	HashMap, TreeMap, LinkedHashMap
+
+#Advantages of Generics
+✔ Prevents ClassCastException
+✔ Ensures type safety
+✔ Code reusability
+
+#Using Custom Object as a Key in HashMap
+When using a custom object as a key in a HashMap, you must override equals() and hashCode().
+#Why Override hashCode() & equals()?
+✔ Ensures correct key retrieval in HashMap.
+✔ Prevents duplicate keys if logically equal.
+
+✅ If a field is primitive or already immutable (String, Integer) → No extra action needed.
+⚠️ If a field is mutable (List, Map, Date) → Use defensive copying.
+🚫 If you expose a mutable reference → The class is not truly immutable!
+
+#Rules to Make a Class Immutable
+Declare the class as final → Prevents subclassing.
+Declare all instance variables as private final → Prevents modification.
+Do not provide setters → No direct way to modify fields.
+Initialize fields via a constructor → Values are set only once.
+Ensure mutable fields are not exposed → Return copies instead of original objects.
+
+#Collections Utility Class (Collections)
+Method ->	Description
+Collections.sort(list)->	Sorts a list in natural order
+Collections.reverse(list)->	Reverses the order of elements
+Collections.max(list)->	Returns the maximum element
+Collections.min(list)->	Returns the minimum element
+Collections.shuffle(list)->	Randomly shuffles the elements
+Collections.unmodifiableList(list)->	Returns an immutable list
+
+#Why use Collections class?
+✔ Provides efficient algorithms for sorting, searching, and modifying collections.
+✔ Prevents manual implementation of common tasks.
+
+#Arrays Utility Class (Arrays)
+Method->	Description
+Arrays.sort(arr)->	Sorts an array
+Arrays.binarySearch(arr, val)->	Searches for a value (Array must be sorted)
+Arrays.copyOf(arr, newSize)->	Copies an array to a new size
+Arrays.toString(arr)->	Converts array to String
+Arrays.asList(arr)->	Converts array to List
+
+#Why use Arrays class?
+✔ Simplifies common array operations.
+✔ Converts arrays to lists easily.
+
+Convert Array to List
+List<String> list = Arrays.asList(arr); // Converts array to List (fixed size)
+
+Convert List to Array
+String[] arr = list.toArray(new String[0]); // Converts List to Array
+
+Sorting an array
+Arrays.sort(arr);
+Filling an array with a value
+Arrays.fill(arr, 10); // Sets all elements to 10
+Checking equality
+boolean result = Arrays.equals(arr1, arr2);
+
+Collections.sort(list);
+Collections.shuffle(list);
+int minVal = Collections.min(list);
+int maxVal = Collections.max(list);
+
+
+How to Break a Singleton Class in Java? (And How to Fix It)
+A Singleton class ensures that only one instance of a class exists. However,
+it can be broken using various techniques like Reflection, Cloning, Serialization, and Multi-threading.
+
+Singleton synchronized:
+Using the synchronized keyword ensures that only one thread enters the method at a time.

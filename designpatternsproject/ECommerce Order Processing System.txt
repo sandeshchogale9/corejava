@@ -1,0 +1,44 @@
+Project: E-Commerce Order Processing System
+We will design an Order Processing System that uses various GOF Design Patterns to handle:
+✔ Order creation (Factory, Singleton, Builder)
+✔ Payment processing (Strategy, Adapter)
+✔ Notifications (Observer)
+✔ Logging and security (Proxy, Decorator)
+
+Tech Stack
+🔹 Java 17
+🔹 Spring Boot (optional)
+🔹 Design Patterns (GOF)
+🔹 JUnit (Testing)
+🔹 Lombok (Simplify boilerplate code)
+
+Step 1: Create Order Processing System Architecture
+Design Patterns Used
+✅ Factory Pattern → Create different types of orders (Regular, Express)
+✅ Singleton Pattern → Ensure only one instance of OrderService
+✅ Builder Pattern → Construct complex Order objects
+✅ Strategy Pattern → Payment processing strategies (CreditCard, PayPal)
+✅ Observer Pattern → Notify users via Email/SMS
+✅ Proxy Pattern → Secure access to OrderService
+✅ Decorator Pattern → Add logging functionality dynamically
+
+Step 2: Implement the Design Patterns
+1️⃣ Factory Pattern - Order Factory
+2️⃣ Singleton Pattern - Order Service
+3️⃣ Builder Pattern - Construct Order Objects
+4️⃣ Strategy Pattern - Payment Processing
+5️⃣ Observer Pattern - Notify Users via Email/SMS
+
+ Next Steps
+🔹 Add More Design Patterns (Decorator, Proxy, Adapter, etc.)
+🔹 Convert to Spring Boot Microservice
+🔹 Add Database (MySQL, JPA)
+🔹 Create REST API (Spring Boot Controllers)
+🔹 Secure with JWT and Spring Security
+
+Summary
+✔ Factory Pattern → Create different types of orders
+✔ Singleton Pattern → Ensure only one instance of OrderService
+✔ Builder Pattern → Construct complex Order objects
+✔ Strategy Pattern → Payment processing methods
+✔ Observer Pattern → Notify users about order updates

@@ -1,0 +1,35 @@
+KISS (Keep It Simple, Stupid)
+Definition: Keep your code as simple as possible while still achieving the required functionality.
+Avoid unnecessary complexity.
+Make the code easy to read, understand, and maintain.
+
+When to Use?
+When designing systems, avoid over-engineering.
+Focus on clarity and simplicity instead of writing complex code.
+Useful for writing readable, maintainable, and bug-free code.
+
+DRY (Don't Repeat Yourself)
+Definition: Avoid code duplication by reusing logic through functions, classes, or modules.
+Extract reusable logic instead of repeating code.
+Helps reduce bugs, improve maintainability, and make changes easier.
+
+When to Use?
+When you notice duplicate code across multiple places.
+When you need to centralize business logic to avoid inconsistencies.
+Helps in avoiding redundancy and improving scalability.
+
+YAGNI (You Ain't Gonna Need It)
+Definition: Don’t build features or code that you don’t currently need.
+Avoid premature optimization or over-engineering.
+Helps focus on immediate requirements rather than hypothetical future ones.
+
+When to Use?
+When you’re tempted to write extra code “just in case”.
+When adding unnecessary complexity that might never be used.
+Helps keep the codebase clean, efficient, and maintainable.
+
+Summary:
+Principle -> Definition-> Example Use Case
+KISS ->	Keep code simple and avoid unnecessary complexity. ->	Write clear, readable logic instead of over-engineering.
+DRY ->	Avoid duplicate code by reusing logic. ->	Centralize logic in reusable functions or services.
+YAGNI ->	Don’t add features unless they are needed right now. ->	 Avoid writing code for hypothetical future scenarios.

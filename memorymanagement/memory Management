@@ -1,0 +1,194 @@
+Memory Management & JVM Internals
+The Java Virtual Machine (JVM) manages memory using a structured approach to optimize performance and garbage collection.
+
+1. JVM Architecture
+The JVM consists of the following main components:
+
+1.1 ClassLoader
+Loads Java class files into memory when needed.
+Uses three types of class loaders:
+Bootstrap ClassLoader – Loads core Java classes (java.lang, java.util).
+Extension ClassLoader – Loads classes from ext directory.
+Application ClassLoader – Loads application-specific classes.
+
+1.2 Runtime Data Areas (JVM Memory Model)
+JVM memory is divided into different sections to efficiently store and manage objects, method calls, and execution flow.
+JVM Memory Areas
+Heap: Stores objects and class instances. Garbage collection (GC) happens here.
+Stack: Stores method calls and local variables. Each thread has its own stack.
+Method Area (Metaspace in Java 8+): Stores class metadata, method code, and static variables.
+PC Register: Keeps track of the current instruction for each thread.
+Native Method Stack: Manages native method calls.
+
+Heap Memory (Shared)
+Stores objects and class instances.
+Garbage Collection (GC) reclaims unused memory.
+Divided into:
+	Young Generation (Eden + Survivor Spaces S1, S2): New objects are allocated here.
+
+	Old Generation (Tenured Space): Long-lived objects are promoted here.
+
+	Metaspace: Stores class metadata (introduced in Java 8, replacing PermGen).
+	Stack Memory (Per Thread)
+	Stores method call frames, local variables, and references.
+	Each thread has its own stack.
+	PC (Program Counter) Register
+	Stores the address of the currently executing instruction in each thread.
+	Native Method Stack
+	Stores method calls for native (non-Java) methods.
+
+1.3 Execution Engine
+	The Execution Engine is responsible for running the bytecode. It consists of:
+	Interpreter – Converts bytecode into machine code line by line.
+	Just-In-Time (JIT) Compiler – Optimizes performance by compiling bytecode into native code at runtime.
+	Garbage Collector (GC) – Automatically removes unused objects from heap memory.
+
+2. JVM Memory Management & Garbage Collection
+	The JVM automatically manages memory allocation and deallocation using Garbage Collection (GC).
+
+2.1 Garbage Collection (GC) Phases
+	Mark Phase – Identifies live objects.
+	Sweep Phase – Removes unused objects.
+	Compact Phase – Rearranges memory to avoid fragmentation.
+
+2.2 Types of Garbage Collectors
+	Serial GC (Single-threaded, used for small apps).
+	Parallel GC (Multi-threaded, used for high throughput apps).
+	CMS (Concurrent Mark Sweep) GC (Low-latency, deprecated in Java 9).
+	G1 GC (Garbage First GC) (Default in Java 9+, divides heap into regions for efficient collection).
+	ZGC (Low-latency GC) (Introduced in Java 11, minimizes pause times).
+
+GC automatically reclaims unused memory, preventing leaks.
+Mark-Sweep-Compact is the standard GC process.
+Different GC strategies exist (Serial, Parallel, CMS, G1, ZGC).
+G1 GC (Default in Java 9+) balances performance and low pause times.
+ZGC (Java 11+) is best for real-time applications with ultra-low pause times.
+
+
+
+2. Just-In-Time (JIT) Compiler
+The JIT compiler optimizes code execution by compiling bytecode into native machine code at runtime.
+It improves performance by caching compiled code and performing optimizations like inlining and loop unrolling.
+
+3. Garbage Collection (GC)
+GC automatically reclaims memory by removing unused objects. Common algorithms:
+
+Mark and Sweep: Identifies live objects (mark phase) and removes unused ones (sweep phase).
+Stop-the-World Pause: Temporarily stops application threads for GC.
+Compact: Moves live objects to remove fragmentation.
+
+4. G1 Garbage Collector (Java 8+)
+G1 (Garbage First) GC divides the heap into regions and prioritizes areas with most garbage.
+It reduces pause times and improves performance compared to older collectors like CMS.
+
+java -XX:+UseG1GC -jar myapp.jar
+
+Changes in Java 8
+Metaspace (Replaces PermGen)
+Metaspace replaces PermGen for storing class metadata, avoiding memory leaks.
+
+Changes in Java 17 (LTS)
+ZGC & Improved G1GC
+ZGC (Low-latency GC) minimizes pause times.
+G1GC improvements for better performance.
+
+
+The JIT compiler is a powerful JVM component that translates bytecode into optimized native code.
+It adapts dynamically to the application’s behavior, improving speed without requiring developer intervention.
+You can monitor and fine-tune JIT optimizations for better performance tuning in high-load applications.
+
+
+Garbage Collection (GC) Strategies in JVM
+
+1. Why Garbage Collection?
+In Java, memory allocation is automatic, but memory deallocation (freeing up memory from unused objects) is handled by Garbage Collection (GC).
+The GC process removes unused objects from the heap, preventing memory leaks and improving performance.
+
+2. Phases of Garbage Collection
+Garbage Collection typically works in three main phases:
+
+	Mark Phase
+	Identifies live objects (objects still in use).
+	Uses reachability analysis to check objects that can still be accessed.
+
+	Sweep Phase
+	Removes unreachable objects (objects with no active references).
+
+	Compact Phase (Optional)
+	Rearranges memory to eliminate fragmentation, optimizing future allocations.
+
+3. Garbage Collectors in Java
+	Java provides different GC implementations for various use cases.
+
+3.1 Serial GC 🏗
+	Use case: Small applications, single-threaded environments.
+	Uses a single-threaded approach.
+	Performs "Stop-the-World" (STW) pauses to clean memory.
+	Command-line option:
+	java -XX:+UseSerialGC -jar myapp.jar
+
+3.2 Parallel GC (Throughput GC) ⚡
+	Use case: High-performance applications needing high throughput.
+	Uses multiple threads for garbage collection.
+	STW pauses but better than Serial GC.
+	Command-line option:
+	java -XX:+UseParallelGC -jar myapp.jar
+
+
+3.3 CMS (Concurrent Mark Sweep) GC ⏳ (Deprecated in Java 9)
+	Use case: Low-latency applications.
+	Runs GC concurrently with application threads to minimize pause times.
+	Uses background threads for GC.
+	Higher CPU usage than Parallel GC.
+	java -XX:+UseConcMarkSweepGC -jar myapp.jar
+
+3.4 G1 GC (Garbage First GC) - Default in Java 9+ 🚀
+	Use case: Large heap applications, minimizing pause times.
+	Divides heap into multiple regions instead of fixed Young/Old generations.
+	Prioritizes garbage collection in regions with most garbage.
+	Balances throughput and low-latency.
+
+Command-line option:
+	java -XX:+UseG1GC -jar myapp.jar
+
+3.5 ZGC (Low-Latency GC) - Java 11+ ⚡⚡
+	Use case: Real-time applications needing ultra-low pause times (<1ms).
+	Works on multi-terabyte heaps (e.g., 2TB).
+	Almost no STW pauses.
+
+Command-line option:
+	java -XX:+UseZGC -jar myapp.jar
+
+4. Example: Understanding GC with Logs
+You can enable GC logs to observe memory cleanup.
+
+	java -XX:+PrintGCDetails -jar myapp.jar
+	Sample output:
+	[GC (Allocation Failure) [PSYoungGen: 2048K->512K(8192K)] 4096K->3072K(16384K)]
+	[GC (CMS Initial Mark) [1.424s] [Mark phase completed in 0.01s]]
+	[Full GC (CMS Final Remark) 3072K->1024K(16384K), 0.02 secs]
+
+	PSYoungGen: Young Generation GC.
+	CMS Initial Mark: CMS GC starting phase.
+	Full GC: Full garbage collection.
+
+5. Choosing the Right GC
+	GC Type	Best for	Pause Times	Throughput	Memory Usage
+	Serial GC	Small apps	High (STW)	Low	Low
+	Parallel GC	High throughput apps	Medium	High	Medium
+	CMS GC	Low-latency apps	Low	Medium	High
+	G1 GC	Large-scale apps	Low	High	Medium
+	ZGC	Real-time apps	Very Low (<1ms)	Medium	High
+
+
+6. Manual Garbage Collection (Not Recommended)
+Java allows manually requesting GC with:
+System.gc();  // Suggests GC, but JVM may ignore it
+
+Why not recommended?
+JVM optimizes memory better than manual intervention.
+Calling System.gc(); can cause unnecessary CPU overhead.
+Verbose-gc
+Shenandaoh GC(java 12)
+
+
