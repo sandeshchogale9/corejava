@@ -1,0 +1,166 @@
+GOF (Gang of Four) Design Patterns and SOLID Principles
+1. SOLID Principles
+SOLID is a set of five principles to design maintainable and scalable object-oriented software.
+	1.1 Single Responsibility Principle (SRP)
+		A class should have only one reason to change.
+		Each class should focus on a single responsibility.
+		When to Use?
+		When a class is handling multiple unrelated functionalities.
+		To improve code maintainability and readability.
+		To avoid large, monolithic classes that are hard to modify.
+
+	1.2 Open/Closed Principle (OCP)
+		Software entities should be open for extension, but closed for modification.
+		Avoid modifying existing code; instead, extend it.
+		 When to Use?
+		When new features need to be added without changing existing code.
+		To avoid breaking changes when updating functionality.
+
+	1.3 Liskov Substitution Principle (LSP)
+		Derived classes must be substitutable for their base classes.
+		Avoid overriding base class behavior in a way that breaks expectations.
+		When to Use?
+		When creating a subclass, ensure it behaves as expected.
+		If overriding methods change expected behavior, rethink inheritance.
+
+	1.4 Interface Segregation Principle (ISP)
+		Don't force classes to implement unnecessary methods.
+		Use smaller, specific interfaces instead of one large interface.
+		When to Use?
+		When an interface contains too many unrelated methods.
+		To prevent forcing subclasses to implement unnecessary methods.
+
+	1.5 Dependency Inversion Principle (DIP)
+		High-level modules should not depend on low-level modules. Both should depend on abstractions.
+		Use Dependency Injection (DI) to avoid hard dependencies.
+		When to Use?
+		When decoupling components to make them easier to test and maintain.
+		To avoid hard-coded dependencies.
+
+2. GOF (Gang of Four) Design Patterns
+GOF Patterns are divided into three categories:
+	2.1 Creational Patterns (Object Creation)
+		Singleton - Only one instance exists.
+			Use Case: When we need to restrict the creation of multiple instances (e.g., Database connections, Logging).
+			When to Use?
+			When only one instance should exist globally.
+			Managing shared resources (e.g., Database, Thread Pool, Logger).
+
+		Factory Method - Creates objects based on a condition.
+			Use Case: When we don’t want the client to worry about the object creation logic.
+			Example: Creating different types of orders (Regular, Express, Prime).
+			When to Use?
+			When object creation logic should be handled dynamically.
+			To achieve loose coupling by delegating instantiation.
+			When subclasses should decide which class to instantiate.
+
+		Builder - Step-by-step object creation.
+			Use Case: Creating complex objects with multiple optional parameters (e.g., User profile, Order object).
+			When to Use?
+			When an object has multiple optional parameters.
+			To avoid a complex constructor with many parameters.
+			Creating immutable objects with controlled configurations.
+
+		Abstract Factory - Factory of Factories.
+			When to Use Abstract Factory?
+				When you need families of related objects (e.g., UI Themes, Database Drivers, Car Parts)
+				When you want to ensure that related objects are created together
+
+		Prototype - Cloning objects.
+			Use Case: When object creation is costly, and we need to clone existing objects efficiently.
+			Example: Creating multiple instances of a document template without re-initializing it.
+			When to Use Prototype Pattern?
+			When object creation is expensive, and we want to clone instead of creating new objects
+			When object state needs to be preserved in cloned copies
+	2.2 Structural Patterns (Object Composition)
+		Adapter - Converts one interface to another.
+			Use Case: When a class has an incompatible interface, but we need to use it.
+			Example: Integrating an old legacy payment system into a new application
+			When to Use?
+			When two incompatible interfaces need to work together.
+			Integrating legacy code with new APIs.
+			Adapting third-party libraries to fit your system.
+
+		Bridge - Decouples abstraction from implementation.
+		Composite - Tree structure representation.
+			Use Case: When we want to decouple abstraction and implementation so they can evolve independently.
+			Example: Different Devices (TV, Radio) controlled by different Remotes (Basic, Advanced).
+			When to Use Bridge Pattern?
+			When you need to decouple abstraction and implementation so they can change independently.
+			When you want to avoid an explosion of subclasses due to multiple variations.
+			When you need to support multiple hierarchies that interact.
+
+		Decorator - Adds behavior dynamically.
+			Use Case: When we need to add behavior dynamically without modifying the existing class.
+			Example: Adding discount or logging to a purchase order.
+			When to Use?
+			When you want to add features dynamically without modifying the existing class.
+			To avoid subclass explosion when many variations of a class are needed.
+			Used in UI components (e.g., adding scrollbars to a window dynamically).
+
+		Facade - Simplifies complex subsystems.
+			Use Case: When we have a complex system and need to provide a simplified interface to clients.
+			Example: A Home Theater System with multiple components (TV, Sound System, DVD Player).
+			When to Use Facade Pattern?
+			When a system has too many complex components and we need a simplified access point
+			When multiple objects need to be accessed in a sequence
+
+		Flyweight - Shares object instances.
+			Use Case: When we have too many objects consuming memory and need to share common objects instead of creating new ones.
+			Example: A text editor reusing Character objects instead of creating new ones.
+			When to Use Flyweight Pattern?
+			When creating many similar objects wastes memory (e.g., Game objects, Text rendering, UI elements).
+			When objects have a lot of shared properties but only a few unique ones (like position)
+
+		Proxy - Controls access to an object.
+			Use Case: When we need to control access, add security, or delay expensive object creation.
+			Example: Restricting access to a database with a proxy class.
+			When to Use Proxy Pattern?
+			When objects are expensive to create, and we want lazy initialization
+			When access needs to be restricted (e.g., Security Proxies, Logging, Cache Proxies)
+
+	2.3 Behavioral Patterns (Communication between Objects)
+		Observer - Event-based notification.
+			Use Case: When we need one-to-many notification, where multiple objects react to changes in another object automatically.
+			Examples:
+				GUI Event Listeners – Button click updates multiple UI components.
+				Stock Market Updates – Investors receive notifications when stock prices change.
+				Publish-Subscribe Systems – Kafka topics notify multiple consumers.
+
+		Strategy - Selects an algorithm at runtime.
+			Use Case: When we need multiple interchangeable behaviors (e.g., Different payment methods).
+			Use Case: When we want to switch between multiple algorithms dynamically based on the situation.
+			Examples:
+				Sorting Algorithms – Choose between QuickSort, MergeSort, or BubbleSort at runtime.
+				Payment Methods – Select Credit Card, PayPal, or UPI dynamically.
+				Compression Strategies – Switch between ZIP, GZIP, or RAR for file compression.
+
+		Command - Encapsulates commands.
+			Use Case: When we want to encapsulate requests as objects, allowing undo/redo functionality or queuing commands.
+			Example: Remote control buttons that execute different commands (Turn On/Off, Change Volume).
+			Use Case: Undo/Redo in text editors, GUI buttons, task scheduling.
+
+		Chain of Responsibility - Passes requests along a chain.
+			Use Case: Middleware authentication, logging, event handling.
+			Use Case: When multiple handlers can process a request without knowing which one will handle it.
+			Example: Support Ticket System where requests are passed to different support levels.
+
+		Template Method - Defines algorithm steps in a superclass.
+			Use Case: Sorting algorithms, game AI logic, workflow automation.
+			Use Case: When multiple subclasses share the same algorithm structure but need different implementations for some steps.
+			Example: Coffee and Tea preparation where boiling and serving are the same, but ingredients differ.
+
+		State - Changes behavior based on state.
+			Use Case: When an object changes behavior dynamically based on its state.
+			Use Case: ATM machines, vending machines, UI state handling.
+			Example: Traffic Light changing behavior based on the color state.
+
+		Visitor - Allows adding methods to existing structures.
+			Use Case: When we want to add new operations to existing classes without modifying them.
+			Use Case: Compilers (syntax tree processing), tax calculations, report generation.
+			Example: Calculating tax for different products without modifying the Product class.
+
+Conclusion:
+SOLID principles help design maintainable, scalable software.
+GOF Design Patterns provide solutions to common problems.
+Understanding these concepts is crucial for designing enterprise applications.

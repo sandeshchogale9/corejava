@@ -1,0 +1,59 @@
+Week	Topics	Duration (In Hrs)	Comments/Suggestions
+
+Week 1
+	Daily the associates have to spend 1+ hours on PS skills. But we count that as 1 hr per day.
+ 	Problem Solving skills -5	
+
+	OOPS: Basics -2	 
+ 	Class Loaders, Reference Types	
+ 	String, String Buffer, and String Builder	
+ 	Equals and Hashcode contract,Comparable and Comparator,Cloning and Types of Cloning,Immutability, Enum	
+
+	Exception Handling, Serialization, Deserialization, Externalization, Reflection	-4	
+ 	Collections & Generics, Custom object as a key, Collections and Arrays util classes	-6	
+
+	Java 8 & 17	 
+ 	All features introduced in java -8
+	coding practice- 
+
+	Fis, Lambda, Optional, Diamond Problem 
+	coding practice
+
+	StreamsProgramming 
+	Record and sealed classes -1 
+
+ 	MID Review -1 
+
+Week 2 
+ 	Problem Solving skills	-5
+	Daily the associates have to spend 1+ hours on PS skills. But we count that as 1 hr per day.
+
+ 	Memory Management, JVM Internals(JIT, garbage collection, mark and swap, G1 GC), Changes in java 8 and 17	-8	 
+
+	GOF DPs  and  SOLID Principles	-8	 
+
+	KISS, DRY and YAGNI	-4	 
+	Multithreading & Concurrency -12 
+
+	Internal working of All the collections includes Concurrent Collections. 
+
+	SQL : DML, DDL, Joins, Group by and Having , normal rank, Query optimization -8	
+
+	MID Review -2 
+Week 3
+ 	Problem Solving skills -5
+	Daily the associates have to spend 1+ hours on PS skills. But we count that as 1 hr per day.
+ 	JPA-Hibernate	-4
+ 	Spring and Spring Boot Skills -28
+ 	Spring Core,Spring MVC
+ 	Spring Vs Spring Boot,
+ 	Spring Data JPA
+ 	Spring Boot, Actuator
+ 	REST implementation and Best Practices ( RMM)
+ 	Spring Secuirty
+ 	JUNIT & TDD	-8
+Week 4
+ 	Micro Services: Architecture and Design Patterns -16
+ 	Work on all the gaps found in last 2 MID Reviews -8
+
+	FINAL Review

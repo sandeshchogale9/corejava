@@ -1,0 +1,405 @@
+SQL Concepts with Examples
+
+1. DDL (Data Definition Language)
+	Used to define or modify database structures.
+	Commands: CREATE, ALTER, DROP, TRUNCATE
+
+	-- Create Table
+	CREATE TABLE Employees (
+		id INT PRIMARY KEY,
+		name VARCHAR(50),
+		salary DECIMAL(10,2)
+	);
+
+	-- Add Column
+	ALTER TABLE Employees ADD COLUMN department VARCHAR(50);
+
+	-- Remove Table
+	DROP TABLE Employees;
+
+2. DML (Data Manipulation Language)
+	Used to manipulate data in tables.
+	Commands: INSERT, UPDATE, DELETE, SELECT
+
+	-- Insert Data
+	INSERT INTO Employees (id, name, salary, department) VALUES (1, 'John', 50000, 'IT');
+
+	-- Update Data
+	UPDATE Employees SET salary = 55000 WHERE id = 1;
+
+	-- Delete Data
+	DELETE FROM Employees WHERE id = 1;
+
+
+3. Joins (Combining Data from Multiple Tables)
+	Types of Joins:
+	Join Type	Description
+	INNER JOIN	Returns matching records from both tables.
+	LEFT JOIN	Returns all records from the left table and matching records from the right.
+	RIGHT JOIN	Returns all records from the right table and matching records from the left.
+	FULL JOIN	Returns all records from both tables (with NULL for missing matches).
+	CROSS JOIN  Return the Cartesian product of rows from the tables in the join. it combines each row from the first table with each row from the second table.
+
+	SELECT e.name, d.department_name
+	FROM Employees e
+	INNER JOIN Departments d ON e.department = d.department_id;
+
+
+4️. GROUP BY and HAVING
+	Used to aggregate data and filter groups.
+	GROUP BY groups rows with the same values.
+	HAVING filters aggregated results (like WHERE but for groups).
+
+	Example: Show departments with more than 5 employees.
+	SELECT department, COUNT(*) AS employee_count
+	FROM Employees
+	GROUP BY department
+	HAVING COUNT(*) > 5;
+
+5. RANK (Assigns Rank to Rows Based on a Column’s Value)
+	RANK() – Assigns unique ranks, skipping numbers for ties.
+	DENSE_RANK() – Assigns consecutive ranks without gaps.
+
+	Example: Employees are ranked by salary in descending order.
+	SELECT name, salary,
+       RANK() OVER (ORDER BY salary DESC) AS salary_rank
+		FROM Employees;
+
+6. Query Optimization Techniques
+	Use Indexing:
+	CREATE INDEX idx_salary ON Employees(salary);
+
+	Avoid SELECT *, Use Specific Columns:
+	SELECT name, salary FROM Employees;
+
+	Use EXPLAIN PLAN to Analyze Queries:
+	EXPLAIN ANALYZE SELECT * FROM Employees WHERE salary > 50000;
+
+	Normalize Database to Reduce Redundancy.
+	Use JOIN Efficiently Instead of Subqueries.
+
+7. Keys in SQL
+	1. Primary Key
+		Ensures:
+			Unique identification of each row.
+			No NULL values allowed.
+	2. Foreign Key
+		Ensures:
+			Establishes a relationship between tables.
+			Maintains referential integrity (can't insert values that don’t exist in the referenced table).
+
+	3. Unique Key
+		Ensures:
+			Uniqueness of values in a column.
+			Unlike a primary key, it allows NULL values.
+
+	4. Composite Key
+		Ensures:
+			Uniqueness using multiple columns together.
+			No single column is unique, but their combination must be unique.
+
+	5. Candidate Key
+		Ensures:
+			A set of potential primary keys.
+			One candidate key is chosen as the primary key, but others remain unique.
+
+	6. Super Key
+		Ensures:
+			Any set of columns that uniquely identify a row.
+			A primary key is a minimal super key.
+		Example:
+			{emp_id} (Primary Key ✅)
+			{emp_id, name} (Super Key ❌ - Extra column)
+			Super keys are not useful in practice because they contain extra unnecessary columns.
+
+	7. Surrogate Key
+		Ensures:
+			A system-generated unique key.
+			Not derived from business data.
+
+	8. Alternate Key
+		Ensures:
+			A candidate key not chosen as the primary key.
+			Example:
+				If both email and customer_id are candidate keys, but customer_id is chosen as the primary key,
+				then email is an alternate key.
+
+8. Normalization
+Normalization is the process of organizing a relational database to reduce redundancy and improve data integrity.
+It involves breaking down a large table into smaller tables and defining relationships between them.
+	Eliminate data redundancy (avoid storing duplicate data).
+	Ensure data integrity (avoid anomalies in insert, update, and delete).
+	Improve database performance (optimized queries).
+
+	1st Normal Form (1NF) – Eliminate Duplicates & Atomicity
+		Rules:
+		Each column should have atomic (indivisible) values.
+		Each row should be unique (have a primary key).
+		No repeating groups (each column should store only one value).
+
+	2nd Normal Form (2NF) – Remove Partial Dependencies
+	Rules:
+		Table must be in 1NF.
+		No partial dependency (i.e., every non-key column must depend on the whole primary key)
+
+	3rd Normal Form (3NF) – Remove Transitive Dependencies
+	Rules:
+		Table must be in 2NF.
+		No transitive dependency (non-key attributes must depend only on the primary key, not on other non-key attributes).
+
+	BCNF (Boyce-Codd Normal Form) – Strict 3NF and BCNF is an advanced version of 3NF that ensures every determinant is a candidate key.
+	Rule:
+		The table must be in 3NF.
+		If any non-trivial functional dependency exists, the left-hand side must be a super key.
+
+	4NF:
+		Removes multi-valued dependencies (tables should not have multiple independent multi-valued facts).
+
+	5NF:
+		Deals with join dependencies (ensures the table cannot be further decomposed without losing data).
+
+Normal form Summary:
+Normal Form	 Condition
+1NF	         No duplicate rows, atomic values.
+2NF	         1NF + No partial dependencies.
+3NF	         2NF + No transitive dependencies.
+BCNF	     3NF + Every determinant is a candidate key.
+4NF	         BCNF + No multi-valued dependencies.
+5NF	         4NF + No join dependencies.
+
+When to Normalize vs. Denormalize?
+Use Normalization when:
+	You want data integrity and consistency.
+	Reducing data redundancy is a priority.
+	You need efficient storage and clear relationships.
+Use Denormalization when:
+	You need faster queries (e.g., data warehouses).
+	Performance is more important than storage.
+	You frequently use complex joins (flatten data for performance).
+
+
+Window functions are categorized into four main types:
+Type	                Description
+Aggregate Functions	    Compute aggregates (SUM, AVG, MIN, MAX, COUNT) over a window of rows.
+Ranking Functions	    Assign ranks to rows (ROW_NUMBER, RANK, DENSE_RANK, NTILE).
+Value Functions	        Access values from other rows (LAG, LEAD, FIRST_VALUE, LAST_VALUE, NTH_VALUE).
+Running Total & Offset	Compute cumulative sums, moving averages (SUM, AVG with PARTITION & ORDER BY).
+
+Common Questions:
+Q1: What is the difference between WHERE and HAVING?
+A:
+	WHERE filters rows before aggregation (used with SELECT, UPDATE, DELETE).
+	HAVING filters rows after aggregation (used with GROUP BY).
+	Example:
+		Find departments with an average salary greater than 60,000:
+
+		SELECT department_id, AVG(salary) AS avg_salary
+		FROM Employees
+			GROUP BY department_id
+				HAVING AVG(salary) > 60000;
+
+Q2: What is an Index? How does it improve query performance?
+Answer:
+	An index is a data structure that improves read performance by allowing faster searches.
+	It works like a book’s table of contents, reducing the number of rows scanned.
+	Downside:
+		Indexes consume extra space and slow down INSERT/UPDATE operations.
+
+	CREATE INDEX idx_salary ON Employees(salary);
+
+Q3: How do you optimize a slow SQL query?
+Answer:
+	Use Indexing:
+		Add indexes to frequently searched columns.
+	Avoid SELECT *:
+		Fetch only required columns.
+	Use Joins Efficiently:
+		Avoid unnecessary joins and use indexed keys.
+	Use EXISTS Instead of IN:
+			SELECT * FROM Employees WHERE EXISTS (SELECT 1 FROM Departments WHERE department_id = Employees.department_id);
+	Check Execution Plan:
+		Use EXPLAIN ANALYZE to find bottlenecks.
+
+Q4: What is the difference between a Primary Key and a Unique Key?
+Primary Key
+	Ensures uniqueness
+	NULL is not Allowed.
+	Only One per Table
+Unique Key
+	Ensures uniqueness
+	Can have one NULL
+	Multiple per Table
+
+	CREATE TABLE Employees (
+		id INT PRIMARY KEY,  -- Primary Key
+		email VARCHAR(100) UNIQUE  -- Unique Key
+	);
+
+Q5: How do you find the second-highest salary?
+	Using LIMIT and OFFSET:
+		SELECT salary FROM Employees ORDER BY salary DESC LIMIT 1 OFFSET 1;
+
+	Using DENSE_RANK() (Handles Duplicates):
+		SELECT salary FROM (
+			SELECT salary, DENSE_RANK() OVER (ORDER BY salary DESC) AS rnk
+				FROM Employees) ranked
+					WHERE rnk = 2;
+
+Q6: What are ACID properties in SQL?
+Answer:
+	Atomicity:
+		Ensures all operations in a transaction complete successfully or rollback.
+	Consistency:
+		Ensures data remains valid before and after a transaction.
+	Isolation:
+		Ensures transactions don’t interfere with each other.
+	Durability:
+		Ensures committed transactions are permanently stored.
+
+	START TRANSACTION;
+	UPDATE Accounts SET balance = balance - 500 WHERE id = 1;
+	UPDATE Accounts SET balance = balance + 500 WHERE id = 2;
+	COMMIT;  -- Ensures both updates are applied together
+
+Q7: What is the difference between DELETE, TRUNCATE, and DROP?
+Answer:
+	Operation	Deletes Data?	    Can Be Rolled Back?	        Resets Auto Increment?
+	DELETE	    Yes (Row by Row)	Yes (Inside Transaction)	No
+	TRUNCATE	Yes (All Rows)	    No	                        Yes
+	DROP	    Yes (Table + Data)	No	                        Not Applicable
+
+	DELETE FROM Employees WHERE id = 5;  -- Deletes specific row
+	TRUNCATE TABLE Employees;  -- Deletes all rows, faster
+	DROP TABLE Employees;  -- Deletes table completely
+
+Q8: What is PARTITION BY and how does it work?
+Answer:
+	PARTITION BY is used to group data within window functions without collapsing rows.
+
+	Example:
+		Assign rank to employees by salary within each department
+
+		SELECT name, salary, department_id,
+		  RANK() OVER (PARTITION BY department_id ORDER BY salary DESC) AS salary_rank
+			FROM Employees;
+
+Q10: What is a Deadlock in SQL?
+Answer:
+	A deadlock occurs when two transactions wait for each other to release locks.
+	Solution:
+		Use timeouts or lock ordering.
+
+		-- Transaction 1
+		BEGIN;
+		UPDATE Employees SET salary = salary + 1000 WHERE id = 1;
+		-- Waits for Transaction 2 to release lock
+
+		-- Transaction 2
+		BEGIN;
+		UPDATE Employees SET salary = salary + 1000 WHERE id = 2;
+		-- Waits for Transaction 1 to release lock
+	Fix:
+		Use lock timeout
+			SET innodb_lock_wait_timeout = 5;
+
+Q11:What is the difference between UNION and UNION ALL?
+Answer:
+	UNION:
+		removes duplicates (slower).
+	UNION ALL:
+		keeps all rows (faster)
+
+	SELECT name FROM Employees
+	UNION
+	SELECT name FROM Clients;
+
+Q12: How does a B-Tree index work internally?
+Answer:
+	B-Tree (Balanced Tree) index is a hierarchical data structure used in most relational databases.
+	Each node contains keys and pointers to child nodes, reducing the number of disk reads.
+	It enables logarithmic (O(log n)) search time, making lookups efficient.
+
+Q13: What is Query Caching? When should you use it?
+Answer:
+	Query caching stores results of frequent queries in memory to avoid repeated execution.
+	Best used for static or rarely changing data.
+
+Q14: What is Sharding? How is it different from Partitioning?
+Answer:
+	Partitioning divides a single table into multiple storage units within the same database.
+	Use partitioning for large tables.
+
+	Sharding distributes data across multiple databases or servers.
+	Use sharding for horizontal scaling in distributed systems.
+
+Q15: How does database partitioning improve performance?
+Answer:
+	Partitioning divides a large table into smaller, more manageable pieces, improving performance.
+	Example:
+		Partitioning Orders Table by Year
+
+Q16: How do you prevent deadlocks in SQL?
+Answer:
+	Access tables in the same order across transactions.
+	Use indexed queries to reduce lock contention.
+	Keep transactions short and commit early.
+	Use LOCK TIMEOUT to avoid indefinite waits.
+
+Q17: What is a Cartesian Join? Why should you avoid it?
+Answer:
+	A Cartesian Join occurs when you join tables without a condition, causing a multiplication of rows (M × N).
+	Avoid it by always specifying a JOIN ON condition.
+
+Q18: When should you use EXISTS instead of IN?
+Answer:
+	Use EXISTS when dealing with large datasets, as it stops execution as soon as a match is found.
+	IN processes all values, making it slower.
+
+Q19: What is the impact of too many indexes on performance?
+Answer:
+	Pros:
+		Faster reads (SELECT queries).
+	Cons:
+		Slower writes (INSERT, UPDATE, DELETE) because each index must be updated.
+	Solution:
+		Use only necessary indexes, avoid indexing frequently updated columns.
+
+Q20: How would you optimize this slow query?
+	This preserves index usage by avoiding the function in the WHERE clause.
+		SELECT * FROM Orders WHERE YEAR(order_date) = 2023;
+	 Issue:
+		The function YEAR(order_date) prevents index usage!
+	Optimized Query:
+		SELECT * FROM Orders WHERE order_date >= '2023-01-01' AND order_date < '2024-01-01';
+
+	This preserves index usage by avoiding the function in the WHERE clause.
+	Range queries are faster with indexing.
+
+Q21: How to check if your query is using an index?
+Answer:
+	Use EXPLAIN ANALYZE in PostgreSQL or EXPLAIN in MySQL to analyze query execution plans.
+	EXPLAIN ANALYZE SELECT * FROM Employees WHERE name = 'Alice';
+
+	Look for:
+		Using index → The query benefits from an index.
+		Using index condition → The index is helping but not fully.
+		Using full table scan → Bad! The query is scanning the entire table.
+
+Q22: What is the difference between Clustered and Non-Clustered Index?
+Answer:
+	Feature	            Clustered Index	                    Non-Clustered Index
+	Physical Storage	Rearranges data physically	        Stores index separately
+	Number per Table	1 (Since data is physically stored)	Multiple allowed
+	Speed	            Faster for range queries	        Slower for large result sets
+	Use Case	        Primary Key Index	                Indexing frequently searched columns
+
+Q23: What are Covering Indexes? How do they improve performance?
+Answer:
+	A covering index is an index that contains all the columns needed for a query, eliminating the need to access the actual table (avoiding "table lookup").
+	Example:
+		CREATE INDEX idx_covering ON Employees (department_id, salary);
+			Then, if you run:
+				SELECT department_id, salary FROM Employees WHERE department_id = 10;
+					The query only accesses the index, improving performance significantly.
+	Downside:
+		Larger index size.

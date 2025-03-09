@@ -1,0 +1,91 @@
+Steam API Methods
+Method	Description
+filter()	Filters elements based on a condition
+map()	Transforms elements
+reduce()	Aggregates values
+groupingBy()	Groups elements by key
+flatMap()	Flattens a stream
+sorted()	Sorts elements
+distinct()	Removes duplicates
+limit()	Limits the number of elements
+skip()	Skips elements
+anyMatch()	Checks if any element matches a condition
+allMatch()	Checks if all elements match a condition
+noneMatch()	Checks if no elements match a condition
+
+1. Syntax of a Lambda Expression
+	(parameters) -> expression
+	(parameters) -> { statements; }
+2. No Need for Explicit Data Types (Type Inference)
+	(int x, y) -> x + y; // ERROR
+3. Single Parameter Can Omit Parentheses
+	str, -> str.length(); // ERROR (comma after parameter)
+4. Use Curly Braces {} for Multiple Statements
+	(x, y) -> { x + y; };  // ERROR
+5. Return Keyword Is Optional for Single Expressio
+	(x, y) -> return x + y; // ERROR
+6. Lambdas Work Only with Functional Interfaces
+	MathOperation addition = (a, b) -> a + b;
+A functional interface has only one abstract method.
+7. Lambdas Can Access Effectively Final Variables
+	int num = 10;
+	Runnable r = () -> {
+		num = num + 5; // ERROR: Variable must be effectively final
+	};
+Lambdas can access local variables only if they are final or effectively final (not modified after initialization).
+8. Lambdas Cannot Have Checked Exceptions Without Handling
+	Consumer<String> fileOpener = (file) -> {
+		throw new IOException("File error"); // ERROR
+	};
+If a lambda body throws a checked exception, it must be handled or declared.
+9. this and super Refer to the Outer Class
+Inside a lambda, this refers to the enclosing instance, not the lambda itself
+
+Lambda Expression Rules Summary Table
+Rule	Example
+Type inference allowed	(x, y) -> x + y
+Single parameter: No () needed	str -> str.length()
+Curly braces for multiple statements	(x, y) -> { System.out.println(x+y); return x+y; }
+return is optional for single expressions	(x, y) -> x + y
+Works only with functional interfaces	interface MathOp { int operate(int a, int b); }
+Can access effectively final variables	int num = 10; () -> System.out.println(num);
+Checked exceptions must be handled	() -> { try { throw new IOException(); } catch (IOException e) {} }
+this refers to enclosing class	Runnable r = () -> System.out.println(this.getClass().getName());
+
+Summary of Practical Lambda Use Cases
+Use Case	Example
+Sorting a List	list.sort((a, b) -> a.length() - b.length())
+Running a Thread	new Thread(() -> System.out.println("Running")).start();
+Function Interface	Function<String, Integer> length = str -> str.length();
+Predicate Interface	Predicate<Integer> isEven = num -> num % 2 == 0;
+Consumer Interface	Consumer<String> print = System.out::println;
+Filtering a List	list.stream().filter(n -> n > 10).collect(Collectors.toList())
+Mapping a List	list.stream().map(String::length).collect(Collectors.toList())
+Custom Functional Interface	interface MathOp { int operate(int a, int b); }
+
+
+4 Types of Method References
+Type	Syntax	Example
+1. Reference to a Static Method	ClassName::staticMethod	Integer::parseInt
+2. Reference to an Instance Method of a Particular Object	object::instanceMethod	"Hello"::length
+3. Reference to an Instance Method of an Arbitrary Object of a Class	ClassName::instanceMethod	String::toUpperCase
+4. Reference to a Constructor	ClassName::new	ArrayList::new
+
+Method Reference Summary Table
+Type	Syntax	Example
+Static Method Reference	ClassName::staticMethod	Integer::parseInt
+Instance Method of a Particular Object	object::instanceMethod	"Hello"::length
+Instance Method of an Arbitrary Object	ClassName::instanceMethod	String::toUpperCase
+Constructor Reference	ClassName::new	ArrayList::new
+
+
+Anonymous Class
+✅ Creates an instance of an interface using new Comparator<Integer>()
+✅ More verbose, requires explicitly defining compare method
+
+Lambda Expression Equivalent
+✅ More concise, no need for method names
+✅ Automatically infers parameter types
+
+
+
