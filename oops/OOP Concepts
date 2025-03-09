@@ -1,0 +1,232 @@
+Basic oops concepts
+Encapsulation- Hides data using private fields and public methods.	private balance in BankAccount
+Inheritance- A child class inherits methods/fields from a parent class.	Dog extends Animal
+Polymorphism- Same method behaves differently (overloading, overriding).	show() in Parent and Child
+Abstraction- Hides implementation details, showing only the necessary parts.
+
+Composition (HAS-A Relationship)
+	-Instead of inheritance, Composition allows one class to contain another class
+	-More flexible than inheritance.
+	-Follows "HAS-A" relationship.
+
+Association → General relationship between objects
+Definition:
+	-It represents a loosely coupled relationship where two objects can exist independently.
+	-It can be one-to-one, one-to-many, many-to-one, or many-to-many
+Both objects exist independently (A Teacher can exist without a Student).
+
+Aggregation → HAS-A relationship (Weaker form of association)
+Definition:
+	-It is a special form of Association where one object contains another object but the contained object can still exist independently.
+	-It is a "has-a" relationship, but ownership is not strong (weak association).
+	-If the Department is deleted, Employee objects still exist.
+	-Employees are aggregated into the Department but not owned by it.
+
+Composition → HAS-A relationship (Stronger form of aggregation)
+Definition:
+	-It is a strong association where one object cannot exist without another.
+	-One object "owns" another completely and is responsible for its lifecycle.
+	-If the parent is deleted, the child is also deleted.
+	-Engine is owned by Car (If the Car is destroyed, Engine is destroyed).
+	-Stronger relationship than Aggregation.
+-Association → Solid line (----->)
+-Aggregation → Hollow Diamond (◊----->)
+-Composition → Filled Diamond (◆----->)
+Association	-> Objects are linked but independent -> Teacher & Student
+Aggregation	-> HAS-A, but objects can exist separately -> Department & Employee pasr of relation
+Composition	-> HAS-A, objects tightly coupled -> Car & Engine
+
+-Use Aggregation when an object can exist independently.
+-Use Composition when an object is tightly coupled and must be destroyed with its parent
+
+Class Loaders in Java
+Class Loaders in Java are responsible for loading class files into memory during runtime. Java uses a hierarchical delegation model for class loading.
+1. Bootstrap ClassLoader (Loads Java core classes)
+	-Loads classes from rt.jar (JDK internal classes like java.lang.String).
+	-Native to JVM (written in C/C++).
+2. Extension ClassLoader (Loads JDK extension classes)
+	-Loads classes from the ext directory ($JAVA_HOME/lib/ext/).
+	-Example: javax.crypto.* classes.
+3. Application ClassLoader (Loads application classes)
+	-Loads classes from the classpath (-cp or CLASSPATH env variable).
+	-Example: Loads user-defined classes in src/main/java.
+4. Custom ClassLoader (User-defined)
+	-Can be implemented by extending ClassLoader class.
+	-Used for dynamic class loading (e.g., in frameworks like Spring).
+
+Reference Types in Java
+1. Strong Reference (Default)
+	-Prevents an object from being garbage collected.
+	-As long as there’s a strong reference, the object stays in memory.
+	-Garbage Collection: Only when the reference is set to null.
+2. Soft Reference (For Caching)
+	-Objects are garbage collected only if memory is low.
+	-Useful for caching (e.g., image caching in apps).
+	- Use Case: Caching frequently used objects.
+3. Weak Reference (Garbage Collected Quickly)
+	-Objects are garbage collected as soon as there are no strong references.
+	-Used for memory-sensitive caches.
+	-Use Case: Java collections like WeakHashMap.
+4. Phantom Reference (For Cleanup Actions)
+	-Objects are finalized before being garbage collected.
+	-Used for resource cleanup tasks.
+	-Use Case: Finalization before garbage collection.
+
+Reference Type - When Collected? - Use Case
+Strong - Never (unless null) - Regular object usage
+Soft - Only if memory is low - Caching(e.g., LRU Cache)
+Weak - Immediately if no strong refs - WeakHashMap(avoid memory leaks)
+Phantom - After finalization - Cleanup actions(e.g., File handles)
+
+String (Immutable)
+	-Immutable: Once created, a String object cannot be changed.
+    -Stored in the String Pool: JVM optimizes memory by reusing string literals.
+    -Thread-Safe: Since it's immutable, multiple threads can access it safely.
+    -Use When: The string value won’t change frequently.
+	-Disadvantage: Every modification creates a new object, causing memory overhead.
+StringBuffer (Mutable, Thread-Safe)
+	-Mutable: String content can be changed.
+	-Thread-Safe: Synchronized methods prevent data corruption in multi-threading.
+	-Performance: Slightly slower than StringBuilder due to synchronization.
+	-Use When: String modifications happen frequently and thread safety is required.
+	-Disadvantage: Synchronization makes it slower than StringBuilder.
+StringBuilder (Mutable, Not Thread-Safe)
+	-Mutable: Similar to StringBuffer, but not synchronized.
+	-Faster Performance: Better than StringBuffer in single-threaded environments.
+	-Faster than StringBuffer since it doesn’t use synchronization.
+	-Use When: Performance matters and thread safety is not a concern.
+	-Disadvantage: Not thread-safe, so it may cause issues in concurrent environments.
+When to Use What?
+	-Use String when the value won’t change (e.g., constants, keys).
+	-Use StringBuffer if multiple threads will modify the string.
+	-Use StringBuilder for faster performance in single-threaded cases.
+using StringBuilder for log aggregation or StringBuffer in multi-threaded application
+Both StringBuffer and StringBuilder maintain a char array internally, which grows dynamically as needed.
+StringBuffer and StringBuilder extend AbstractStringBuilder, which manages the character array.
+It calls super.append(str), which belongs to AbstractStringBuilder.
+int newCapacity = (oldCapacity * 2) + 2; // (old capacity * 2) + 2
+Both StringBuilder and StringBuffer have an initial capacity of 16 characters if no size is specified.
+System.out.println(sb.capacity());  // Output: 34 (Expanded)
+
+1. equals() and hashCode() Contract
+In Java, equals() and hashCode() must follow a contract to ensure correct behavior in collections like HashMap, HashSet, and HashTable.
+equals() must give the same result unless object state changes.
+If two objects are equal, they must have the same hashCode.
+Ensures correct behavior in Hash-based collections (HashMap, HashSet).
+Without overriding hashCode(), two equal objects may have different hash codes, breaking collections like HashMap.
+
+2. Comparable vs Comparator
+Both are used to sort objects, but they work differently.
+
+Comparable (Natural Ordering)
+	-Implements Comparable<T> interface.
+	-Modifies class itself.
+	-Uses compareTo() method.
+	-Use Comparable when: Default sorting logic is required (e.g., Sorting by id).
+Comparator (Custom Sorting)
+	-Implements Comparator<T> interface.
+	-Defines external sorting logic without modifying the original class.
+	-Uses compare() method.
+	-Use Comparator when: Multiple sorting criteria are needed (e.g., Sorting by id, name, etc.).
+
+Difference Between compareTo() and compare() in Java
+Both compareTo() and compare() methods are used for comparison in Java, but they belong to different interfaces and serve slightly different purposes.
+Method	Belongs To ->	Purpose	-> Signature
+compareTo()	-> Comparable<T> -> Compares the current object with another	int compareTo(T o)
+compare()	-> Comparator<T> -> Compares two objects explicitly	int compare(T o1, T o2)
+
+Use compareTo() (Comparable) when sorting should be the default behavior of the class.
+Use compare() (Comparator) when you need different sorting strategies or don't want to modify the class.
+
+3. Cloning in Java
+	Cloning creates a copy of an object. Java supports two types:
+	1. Shallow Cloning
+		-Copies field values as-is.
+		-For object references, only the reference is copied (not the actual object).
+		-Shallow Copy Problem: If an object contains references, cloning does not create new copies of referenced objects.
+	2. Deep Cloning
+		-Creates completely independent copies.
+		-Manually clones referenced objects.
+		-Use Deep Cloning when: We need a full copy without modifying the original object.
+Why is clone() a protected method in the Object class?
+To ensures controlled access to cloning behavior.
+protected → Can be accessed within the same package or via subclassing.
+native → Implemented in native code (JVM-level).
+Returns → A shallow copy of the object.
+Throws CloneNotSupportedException if the class doesn't implement Cloneable.
+
+Why is clone() protected?
+Reason 1: To Enforce Controlled Cloning (Encapsulation)
+Making clone() protected prevents arbitrary cloning of objects.
+It forces developers to explicitly override and expose clone() in subclasses.
+If clone() were public in Object, any object could be cloned, leading to unintended behavior.
+
+Reason 2: Forces Classes to Implement Cloneable
+clone() checks if a class implements the Cloneable interface before cloning.
+Cloneable is a marker interface (it has no methods, just a tag for JVM).
+If a class doesn’t implement Cloneable, clone() throws CloneNotSupportedException.
+
+Reason 3: Prevents Unintended Cloning of Immutable Objects
+String, Integer, and other immutable classes do not allow cloning.
+If clone() were public, users might accidentally clone immutable objects, breaking immutability.
+
+Reason 4: Encourages Custom Cloning Logic
+The default clone() performs a shallow copy.
+Some objects require deep copying to duplicate mutable fields properly.
+By making clone() protected, Java forces developers to think about cloning behavior.
+
+Feature	Why clone() is Protected
+Encapsulation	Prevents direct cloning from Object.
+Enforces Cloneable	Ensures classes explicitly allow cloning.
+Immutable Classes	Prevents unintended cloning of immutable objects.
+Custom Cloning	Encourages overriding for deep copy needs.
+
+4. Immutability in Java
+	An immutable object is one that cannot be modified after creation.
+	How to Make a Class Immutable?
+		-Declare fields as private final.
+		-Do not provide setters.
+		-Clone or return a copy of mutable objects.
+		-Examples of Immutable Classes: String, Integer, LocalDate.
+		-Thread-safe, no synchronization needed.
+5. Enum in Java
+	-An Enum is a special class that represents a group of constants.
+	-Type-safe constant values.
+	-Can have constructors, methods, and fields.
+
+pattern matching in switch case java 17
+Before Java 17, we had to use instanceof with explicit casting:
+With Java 17 switch pattern matching, it simplifies:
+null Handling in Pattern Matching (default case needed)
+switch doesn't accept null directly.
+Handle it separately
+
+Final Thoughts
+Feature	Benefit
+Pattern Matching	Eliminates explicit type casting
+null Handling	Avoids NullPointerException
+Guards (when)	Adds conditions inside case
+Works with Sealed Classes	Ensures all cases are handled
+
+What Happens If a Class Overrides clone() but Does Not Implement Cloneable?
+In Java, if a class overrides the clone() method without implementing Cloneable, calling clone() will result in a CloneNotSupportedException.
+Why Does This Happen?
+The clone() method in Object checks if the class implements Cloneable.
+If the class does not implement Cloneable, clone() throws CloneNotSupportedException.
+Inside Object.clone() (JVM level):
+
+What If Cloneable Is Implemented but clone() Is Not Overridden?
+Even if you implement Cloneable, not overriding clone() will still call Object.clone(), which is protected and not accessible:
+
+
+Collection Framework Heirarchy:
+ Collection (I)
+                      |
+      ---------------------------------
+      |               |               |
+     List (I)        Set (I)        Queue (I)
+      |               |               |
+  ----------------   ------          -----
+  |      |      |   |      |        |     |
+Array  Linked Vector Hash  Tree  Priority Deque
+List   List         Set   Set   Queue
